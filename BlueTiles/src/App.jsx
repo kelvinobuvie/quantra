@@ -26,7 +26,7 @@ const App = () => {
 
         {/* Main Layout */}
         <Route path='/' element={<MainLayout />}>
-          <Route index element={<Navigate to='overview' />} />
+          <Route index element={<Navigate to='login' />} />
           <Route path='overview' element={<Overview   balance={balance}/>} />
           <Route path='new-target' element={<GoalForm />} />
           <Route path='wallet' element={<Wallet balance={balance} />} />
