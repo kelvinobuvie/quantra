@@ -24,3 +24,29 @@ dist-ssr
 *.sw?
 
 vercel.json
+
+
+// Route to Add a New Goal
+app.post('/api/goals', (req, res) => {
+  const { name, completionDate, goalType, amount } = req.body;
+  const dateFilled = new Date().toISOString().split('T')[0];
+  const status = new Date(completionDate) >= new Date() ? 'Ongoing' : 'Completed';
+
+  const query = 'INSERT INTO goals (name, goalType, amount, savedAmount, completionDate, status) VALUES (?, ?, ?, ?, ?, ?)';
+  pool.query(query, [name, goalType, amount, 0, completionDate, status], (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error adding goal', error: err });
+    }
+    res.status(201).json({ id: result.insertId, name, goalType, amount, savedAmount: 0, completionDate, status });
+  });
+});
+
+// Route to Get All Goals
+app.get('/api/goals', (req, res) => {
+  pool.query('SELECT * FROM goals', (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error retrieving goals', error: err });
+    }
+    res.json(results);
+  });
+});
