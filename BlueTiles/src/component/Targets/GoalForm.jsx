@@ -1,154 +1,128 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-// import GoalTable from '../GoalTable/GoalTable';
-import Nav from '../Nav';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const GoalForm = () => {
-  const [goal, setGoal] = useState('');
-  const [completionDate, setCompletionDate] = useState('');
-  const [goalType, setGoalType] = useState('Saving');
+const TransactionForm = ({ balance, updateBalance }) => {
+  const [category, setCategory] = useState('Food');
   const [amount, setAmount] = useState('');
-  const [goals, setGoals] = useState([]);
-  const [balance, setBalance] = useState(10000); // Default balance
-  const [showAlert, setShowAlert] = useState(false);
+  const [description, setDescription] = useState('');
+  const [alert, setAlert] = useState(null); // For showing success or error alerts
 
-  const navigate = useNavigate(); // Initialize navigate hook
-
-  // Fetch goals and balance on component load
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/goals')
-      .then(res => setGoals(res.data))
-      .catch(err => console.error(err));
-
-    axios.get('http://localhost:5000/api/balance')
-      .then(res => setBalance(res.data.balance))
-      .catch(err => console.error(err));
-  }, []);
-
-  // Handle Form Submission
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation to ensure sufficient balance for Saving or Safe Lock goals
-    if (parseInt(amount) > balance && (goalType === 'Saving' || goalType === 'Safe Lock')) {
-      alert("Insufficient balance for this goal!");
-      return;
+    // Check if the amount is less than or equal to the available balance
+    if (parseInt(amount) > balance) {
+      setAlert({ type: 'error', message: 'Transaction Failed: Insufficient Balance' });
+      return;  // Exit if balance is insufficient
     }
 
-    const newGoal = {
-      name: goal,
-      completionDate,
-      goalType,
-      amount,
-      savedAmount: 0, // New field to track saved progress
-      status: 'Ongoing',
+    // Get current date in 'YYYY-MM-DD HH:MM' format
+    const date = new Date();
+    const formattedDate = date.toISOString().slice(0, 16).replace('T', ' '); // Removing seconds
+
+    // Create the new transaction object
+    const newTransaction = {
+      category,
+      amount: parseInt(amount),
+      description,
+      status: 'Successful',
+      date: formattedDate, // Correct date format for MySQL
     };
 
-    axios.post('http://localhost:5000/api/goals', newGoal)
-      .then(res => {
-        setGoals([...goals, res.data]);
-        setGoal('');
-        setCompletionDate('');
-        setAmount('');
-        setGoalType('Saving');
+    // Send the POST request to the backend
+    axios.post('http://localhost:5000/api/transactions', newTransaction)
+      .then((res) => {
+        // Log the response to see what the backend returns
+        console.log('Backend Response:', res);
 
-        // Update balance if Saving or Safe Lock
-        if (goalType === 'Savings' || goalType === 'Safe Lock') {
-          axios.post('http://localhost:5000/api/transactions', {
-            category: goalType,
-            amount: parseInt(amount),
-            description: `Goal for ${goal}`,
-            date: new Date().toLocaleDateString(),
-            status: 'Completed'
-          })
-          .then(() => {
-            setBalance(balance - parseInt(amount)); // Update the balance after transaction
-          })
-          .catch(err => console.error(err));
+        // If the response status is successful
+        if (res.data.status === 'Successful') {
+          // Update the balance by calling the updateBalance function passed from App.js
+          updateBalance(parseInt(amount));
+
+          setAlert({ type: 'success', message: 'Transaction Successful!' });
+        } else {
+          setAlert({ type: 'error', message: 'Transaction Failed' });
         }
 
-        // Show success alert
-        setShowAlert(true);
-        
-        // Hide alert after 2 seconds and navigate to /targets
-        setTimeout(() => {
-          setShowAlert(false); // Hide the alert
-          navigate('/targets'); // Navigate to /targets page after 2 seconds
-        }, 2000);
+        // Reset form fields
+        setCategory('Food');
+        setAmount('');
+        setDescription('');
       })
-      .catch(err => console.error(err));
-  };
+      .catch((err) => {
+        // Log the error
+        console.error('Error:', err);
 
-  // Dynamic Label for Amount
-  const getAmountLabel = () => {
-    return goalType === 'Safe Lock'
-      ? 'How much do you want to safe lock?'
-      : 'How much do you plan on saving towards this goal?';
+        // Display error alert
+        setAlert({ type: 'error', message: 'Transaction Failed: Internal Server Error' });
+      });
   };
 
   return (
     <div className="lg:ml-56 px-4">
-      <Nav title={"Create new target"} />
+      <h1 className="text-md font-bold mb-4 text-green-700">New Transaction</h1>
 
-      <h1 className="text-md font-bold mb-4 px-16 text-green-700">New Target</h1>
-
-      {showAlert && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded">
-          Goal has been successfully logged!
+      {/* Displaying Alerts */}
+      {alert && (
+        <div className={`mb-4 p-4 rounded border ${alert.type === 'success' ? 'bg-green-100 border-green-400 text-green-800' : 'bg-red-100 border-red-400 text-red-800'}`}>
+          {alert.message}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mb-5 grid gap-3 px-16">
-        <input
-          type="text"
-          placeholder="Goal"
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
-          required
-          className="border rounded p-2"
-        />
-
-        <select
-          value={goalType}
-          onChange={(e) => setGoalType(e.target.value)}
-          className="border rounded p-2"
-        >
-          <option value="Savings">Saving</option>
-          <option value="Safe Lock">Safe Lock</option>
-        </select>
+      {/* Transaction Form */}
+      <form onSubmit={handleSubmit} className="mb-5 grid gap-3">
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-600">Transaction Category</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border rounded p-2"
+          >
+            <option value="Food">Food</option>
+            <option value="Data">Data</option>
+            <option value="Transport">Transport</option>
+            <option value="Saving">Savings</option>
+            <option value="Safe Lock">Safe Lock</option>
+          </select>
+        </div>
 
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">{getAmountLabel()}</label>
+          <label className="text-sm text-gray-600">Amount</label>
           <input
             type="number"
-            placeholder="Amount"
+            placeholder="Enter Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
-            className="border rounded p-2 "
+            className="border rounded p-2"
           />
         </div>
 
-        <input
-          type="date"
-          value={completionDate}
-          onChange={(e) => setCompletionDate(e.target.value)}
-          required
-          className="border rounded p-2 "
-        />
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-600">Description</label>
+          <input
+            type="text"
+            placeholder="Enter Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            className="border rounded p-2"
+          />
+        </div>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-700 "
-        >
-          Add Goal
-        </button>
+        <div className="grid md:grid-cols-2 gap-5">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-700"
+          >
+            Submit Transaction
+          </button>
+        </div>
       </form>
-
-
     </div>
   );
 };
 
-export default GoalForm;
+export default TransactionForm;

@@ -6,7 +6,7 @@ const TotalGoalsAmount = () => {
   const [loading, setLoading] = useState(true);  // Loading state
 
   useEffect(() => {
-    // Fetch the total amount of goals from the backend
+    // Fetch the total amount of goals from the backend (Savings and Safe Lock)
     const fetchTotalAmount = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/total-goals-amount');

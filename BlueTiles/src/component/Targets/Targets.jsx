@@ -32,7 +32,7 @@ const Targets = ({ balance }) => {
       <div className='flex gap-5'>
         <button 
           className="bg-orange-500 text-white font-bold px-4 py-2 hover:bg-orange-700 mb-4"
-          onClick={() => navigate('/new-target')}
+          onClick={() => navigate('/new-transaction')}
         >
           New Traget
         </button>

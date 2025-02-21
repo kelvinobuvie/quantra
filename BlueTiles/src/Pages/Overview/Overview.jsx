@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Nav from '../../component/Nav'
 import OverviewCards from '../../component/overview/OverviewCards'
-import SavingsExpenseChart from '../../component/overview/SavingsExpenseChart';
+// import SavingsExpenseChart from '../../component/overview/CategoryBarChart';
 import DashboardUpdate from '../../component/overview/TargetSummary';
 // import RecentTransactions from '../../component/overview/RecentTransactions';
 import SetNewTargetBtn from '../../component/overview/SetNewTargetBtn';
 import TransactionList from '../Wallet/TransactionList';
 import TransactionHistory from '../TransactionHistory';
+import CategoryBarChart from '../../component/overview/CategoryBarChart';
 
 
 
@@ -49,7 +50,7 @@ const Overview = ({ balance }) => {
             <div className='lg:flex mt-6 gap-5'>
               <div className='py-2 px-8 w-full border-2 rounded-lg max-lg:hidden'>
                 <h1 className='font-medium text-lg text-gray-700'>Financial Overview</h1>
-                <SavingsExpenseChart data={data} />
+                <CategoryBarChart />
               </div>
               <div className='w-full bg-white border border-gray-300 rounded-md shadow-sm flex flex-col h-96 overflow-y-auto'>
                 <div className='flex justify-between px-4 py-4 font-medium bg-white'>

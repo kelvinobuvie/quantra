@@ -6,7 +6,7 @@ const TotalAmount = () => {
   const [loading, setLoading] = useState(true);  // Loading state to show loading indicator
 
   useEffect(() => {
-    // Fetch the total transaction amount when the component mounts
+    // Fetch the total amount of transactions excluding Savings and Safe Lock when the component mounts
     const fetchTotalAmount = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/transactions/total');

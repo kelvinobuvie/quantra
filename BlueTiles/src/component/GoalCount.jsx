@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const GoalCount = () => {
-  const [goalCount, setGoalCount] = useState(0);
+const CategoryCount = () => {
+  const [categoryCount, setCategoryCount] = useState(0);
 
-  // Fetch goal count from the backend
+  // Fetch count of transactions with category 'Savings' or 'Safe Lock'
   useEffect(() => {
-    const fetchGoalCount = async () => {
+    const fetchCategoryCount = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/goals/count');
-        setGoalCount(response.data.count);  // Set the goal count from the response
+        const response = await axios.get('http://localhost:5000/api/transactions/count/savings-safelock');
+        setCategoryCount(response.data.count);  // Set the count from the response
       } catch (error) {
-        console.error('Error fetching goal count:', error);
+        console.error('Error fetching category count:', error);
       }
     };
 
-    fetchGoalCount();  // Fetch the goal count when the component mounts
+    fetchCategoryCount();  // Fetch the count when the component mounts
   }, []);
 
   return (
     <div>
-      <p>{goalCount}</p>
+      <p>{categoryCount}</p>
     </div>
   );
 };
 
-export default GoalCount;
+export default CategoryCount;
