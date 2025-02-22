@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Balance from './Balance';
+
 
 const TransactionForm = ({ balance, updateBalance }) => {
   const [category, setCategory] = useState('Food');
@@ -70,6 +72,12 @@ const TransactionForm = ({ balance, updateBalance }) => {
           {alert.message}
         </div>
       )}
+
+      {/* Balance Component */}
+      <div className="mb-4 p-4 bg-gray-100 border rounded shadow-md">
+        <h2 className="text-xl font-bold">Balance</h2>
+        <Balance balance={balance} />
+      </div>
 
       {/* Transaction Form */}
       <form onSubmit={handleSubmit} className="mb-5 grid gap-3">

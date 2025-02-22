@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // Make sure axios is installed
+import { useNavigate } from 'react-router-dom';
+
 
 
 const GoalTable = () => {
+    const navigate = useNavigate();
    const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);  // To handle loading state
     const [error, setError] = useState(null);  // To handle error state
@@ -33,7 +36,7 @@ const GoalTable = () => {
     <div className="mt-2 p-4 bg-white rounded-lg shadow-md h-80 overflow-y-auto">
        <div className='flex justify-between  py-4 px-4'>
             <span className='text-sm font-semibold text-blue-950'>Targets</span>
-            <a href="/wallet" className="text-xs text-orange-500 font-medium inline-block hover:underline">View all</a>
+            <a onClick={() => navigate('/transaction-history')} className="text-xs text-orange-500 font-medium inline-block hover:underline">View all</a>
         </div>
         <table className="min-w-full bg-white border-collapse">
         <thead className='text-gray-500 text-xs'>

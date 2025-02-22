@@ -42,12 +42,10 @@ const OverviewCards = ({ balance }) => {
     },
   ];
   const navigate = useNavigate();
-        const Redirect = () => {
-        navigate('/overviw')
-    }
+
 
   return (
-    <a onClick={Redirect} className="hover:cursor-pointer">
+    <a onClick={() => navigate('/wallet')} className="hover:cursor-pointer">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pb-2 pt-8">
       {cards.map((card, index) => (
         <div
@@ -63,7 +61,7 @@ const OverviewCards = ({ balance }) => {
             <div className="">{card.cardImage}</div>
           </div>
           <div className="flex justify-between mt-4">
-            <a href="/" className="text-green-600 hover:underline text-xs">
+            <a onClick={() => navigate('/wallet')} className="text-green-600 hover:underline text-xs">
               See all ↗
             </a>
             {card.note && (
