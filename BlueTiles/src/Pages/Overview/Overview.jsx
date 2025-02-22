@@ -49,7 +49,7 @@ const Overview = ({ balance }) => {
             </div>
             <div className='lg:flex mt-6 gap-5'>
               <div className='py-2 px-8 w-full border-2 rounded-lg max-lg:hidden'>
-                <h1 className='font-medium text-lg text-gray-700'>Financial Overview</h1>
+                <h1 className='font-medium text-lg text-gray-700 '>Financial Overview</h1>
                 <CategoryBarChart />
               </div>
               <div className='w-full bg-white border border-gray-300 rounded-md shadow-sm flex flex-col h-96 overflow-y-auto'>
