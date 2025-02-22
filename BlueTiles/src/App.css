@@ -64,3 +64,11 @@ body{
   color: #bbb;
   font-size: 1.2rem;
 }
+
+.logout{
+  cursor: pointer;
+}
+
+.viewall{
+  cursor: pointer;
+}

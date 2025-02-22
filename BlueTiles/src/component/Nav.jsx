@@ -6,9 +6,12 @@ import { TbTargetArrow } from "react-icons/tb";
 import { GrAnalytics } from "react-icons/gr";
 import { AiOutlineStock } from "react-icons/ai";
 import { IoWalletOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+
 
 
 const Nav = ({ title }) => {
+  const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null); // Ref to track the sidebar element
 
@@ -75,19 +78,19 @@ const Nav = ({ title }) => {
                                       </NavLink>
                                   </li>
                                   <li className='mb- text-sm gap-5 hover:bg-white  py-2'>
-                                      <NavLink to="/" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
+                                      <NavLink to="/wallet" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
                                           <IoWalletOutline className='inline-block w-4 h-5 mr-3 -mt-1'></IoWalletOutline>
                                           Wallet
                                       </NavLink>
                                   </li>
                                   <li className='mb- text-sm hover:bg-white py-2'>
-                                      <NavLink to="/" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
+                                      <NavLink to="/targets" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
                                           <TbTargetArrow  className='inline-block w-4 h-5 mr-3 -mt-1'></TbTargetArrow>
                                           Target and Goals
                                       </NavLink>
                                   </li>
                                   <li className='mb- text-sm gap-5 hover:bg-white   py-2'>
-                                      <NavLink to="/" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
+                                      <NavLink to="/transaction-history" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
                                           <GrAnalytics  className='inline-block w-4 h-5 mr-3 -mt-1'></GrAnalytics>
                                           Report & Analytics
                                       </NavLink>
@@ -110,7 +113,7 @@ const Nav = ({ title }) => {
               <div className='flex items-center gap-x-5'>
                 <div className='mb-3 px-3 py-1 border rounded-md bg-gray-300 relative'>
 
-                    <a a href="/login" className='text-sm text-blue-950 font-semibold'>Log Out</a>
+                    <a onClick={() => navigate('/login')} className='text-sm text-blue-950 font-semibold logout'>Log Out</a>
                     {/* <div className='z-10 hidden absolute rounded-lg shadow w-32 group-focus:block top-full right-0 bg-black'>
                       <ul className='py-2 text-sm text-orange-500'>
                         <li><a href="">Profile</a></li>
