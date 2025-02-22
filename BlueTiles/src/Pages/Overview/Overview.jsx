@@ -52,7 +52,7 @@ const Overview = ({ balance }) => {
                 <h1 className='font-medium text-lg text-gray-700 '>Financial Overview</h1>
                 <CategoryBarChart />
               </div>
-              <div className='w-full bg-white border border-gray-300 rounded-md shadow-sm flex flex-col h-96 overflow-y-auto'>
+              <div className='w-full bg-white border border-gray-300 rounded-md shadow-sm flex flex-col h-96 overflow-y-auto max-lg:hidden'>
                 <div className='flex justify-between px-4 py-4 font-medium bg-white'>
                   <span className='text-gray-700 text-lg'>Targets & Goals</span>
                   <span className='text-orange-500'>See all</span>
