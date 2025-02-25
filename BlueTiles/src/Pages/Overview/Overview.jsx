@@ -38,7 +38,7 @@ const Overview = ({ balance }) => {
           <div className="grid lg:flex justify-between">
             <div>
               <p className="font-normal text-2xl wel-t text-blue-950">Welcome to <span className="font-bold text-orange-500">quantra</span></p>
-              <p className="mt-3 text-sm font-normal wel-b text-gray-700">Take a look at your and take a look a your tagrts, expenses and Transactions</p>
+              <p className="mt-3 text-sm font-normal wel-b text-gray-700">Take a look at your Finances, Tagrts, Expenses and Transactions</p>
             </div>
             <div className="mt-6">
               <SetNewTargetBtn/>
