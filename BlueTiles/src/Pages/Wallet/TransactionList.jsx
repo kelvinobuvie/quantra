@@ -96,12 +96,12 @@ const TransactionList = () => {
         <label htmlFor="category-select" className="block text-sm font-semibold text-blue-950 mb-2">Filter by Category</label>
         <select
           id="category-select"
-          className="p-2 border border-gray-300 rounded-lg w-full"
+          className="p-2 border border-gray-300 rounded-lg w-full text-xs font-light text-blue-950 "
           value={selectedCategory}
           onChange={handleCategoryChange}
         >
           {categories.map((category, index) => (
-            <option key={index} value={category}>{category}</option>
+            <option className="font-medium text-xs text-blue-950" key={index} value={category}>{category}</option>
           ))}
         </select>
       </div>

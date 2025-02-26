@@ -129,7 +129,7 @@ const TransactionForm = ({ balance, updateBalance }) => {
         <div className="grid md:grid-cols-2 gap-5">
           <button
             type="submit"
-            className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-700"
+            className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-700 font-semibold"
           >
             Submit Transaction
           </button>
