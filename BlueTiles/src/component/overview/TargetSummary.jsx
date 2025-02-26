@@ -41,7 +41,7 @@ const TargetSummary = () => {
             </div>
             <span className="flex-grow text-sm font-semibold text-gray-600">{tx.description}</span>
             <a href="/targets" className="text-sm text-blue-950 hover:underline">
-              {tx.status}
+              Completed
             </a>
           </li>
         ))}

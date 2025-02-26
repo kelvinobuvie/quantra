@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import Balance from './Balance';
-
 
 const TransactionForm = ({ balance, updateBalance }) => {
   const [category, setCategory] = useState('Food');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [alert, setAlert] = useState(null); // For showing success or error alerts
+  const navigate = useNavigate(); // Hook to navigate programmatically
 
   // Handle form submission
   const handleSubmit = (e) => {
@@ -44,6 +45,11 @@ const TransactionForm = ({ balance, updateBalance }) => {
           updateBalance(parseInt(amount));
 
           setAlert({ type: 'success', message: 'Transaction Successful!' });
+
+          // Redirect to the wallet page after successful transaction
+          setTimeout(() => {
+            navigate('/wallet');  // Redirect to the wallet page
+          }, 1500); // Delay to give the user time to see the success alert
         } else {
           setAlert({ type: 'error', message: 'Transaction Failed' });
         }

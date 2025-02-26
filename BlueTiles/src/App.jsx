@@ -9,6 +9,7 @@ import Wallet from './Pages/Wallet/Wallet';
 import TransactionForm from './Pages/Wallet/TransactionForm';
 import Targets from './component/Targets/Targets';
 import TransactionHistory from './Pages/TransactionHistory';
+import Investment from './Pages/Investment';
 
 const App = () => {
   // Centralized Balance State
@@ -33,6 +34,7 @@ const App = () => {
           <Route path='targets' element={<Targets balance={balance} />} />
           <Route path='new-transaction' element={<TransactionForm balance={balance} updateBalance={updateBalance} />} />
           <Route path='transaction-history' element={<TransactionHistory />} />
+          <Route path='investment' element={<Investment />} />
         </Route>
       </Routes>
     </Router>
