@@ -77,6 +77,23 @@ app.get('/api/transactions/count/savings-safelock', (req, res) => {
   });
 });
 
+// app.get('/api/transactions/summary/savings-safelock', (req, res) => {
+//   // SQL query to count transactions with category 'Savings' or 'Safe Lock'
+//   const query = `SELECT description, status 
+//       FROM transactions
+//       WHERE category IN ('Saving', 'Safe Lock')`;
+
+//   pool.query(query, (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ status: 'Failed', message: 'Error fetching transaction count', error: err });
+//     }
+
+//     // Send the count as part of the response
+//     const count = results[0]?.count || 0;
+//     res.status(200).json({ status: 'Successful', count });
+//   });
+// });
+
 // Assuming you have an Express app setup
 // app.get('/api/transactions/total/savings-safelock', (req, res) => {
 //   const query = `

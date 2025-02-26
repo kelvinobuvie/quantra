@@ -3,21 +3,20 @@ import axios from 'axios';
 
 const useGoalNamesAndStatus = () => {
   const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);  // Track loading state
-  const [error, setError] = useState(null);  // Handle errors
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch transaction data from the backend API
     axios.get('http://localhost:5000/api/transactions/savings-safelock')
       .then(res => {
-        // Check if the API returns a valid response
+        console.log(res.data); // Log the response structure to debug
         if (res.data && Array.isArray(res.data)) {
-          // Assuming the API returns an array of goals with description and status
-          const fetchedGoals = res.data.map(tx => ({
-            name: tx.description || 'No Name',  // Make sure the description field exists
-            status: tx.status || 'No Status',   // Ensure status exists
+          // Limiting the results to 10
+          const fetchedGoals = res.data.slice(0, 10).map(tx => ({
+            name: tx.description || 'No Name',
+            status: tx.status || 'No Status',
           }));
-          setGoals(fetchedGoals);  // Update state with transaction data
+          setGoals(fetchedGoals);
         } else {
           setError('Invalid response format');
         }
@@ -25,8 +24,8 @@ const useGoalNamesAndStatus = () => {
       .catch(err => {
         setError('Error fetching goals: ' + err.message);
       })
-      .finally(() => setLoading(false));  // Stop loading when finished
-  }, []);  // Empty dependency array ensures it runs once after the first render
+      .finally(() => setLoading(false));
+  }, []);  // Empty dependency array ensures this runs only once on mount
 
   return { goals, loading, error };
 };
