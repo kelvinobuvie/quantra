@@ -3,12 +3,32 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import Balance from './Balance';
 
+// Function to generate a random name
+const generateRandomName = () => {
+  const names = ['John Doe', 'Jane Smith', 'Michael Johnson', 'Emily Davis', 'Chris Lee', 'Sarah Brown', 'David Wilson', 'Jessica Harris', 'James Clark', 'Laura Lewis'];
+  const randomIndex = Math.floor(Math.random() * names.length);
+  return names[randomIndex];
+};
+
 const TransactionForm = ({ balance, updateBalance }) => {
   const [category, setCategory] = useState('Food');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [alert, setAlert] = useState(null); // For showing success or error alerts
+  const [accountNumber, setAccountNumber] = useState('');
+  const [bank, setBank] = useState('Opay');
+  const [randomName, setRandomName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [biller, setBiller] = useState('Airtel');
   const navigate = useNavigate(); // Hook to navigate programmatically
+
+  // Handle bank change and generate random name
+  const handleBankChange = (e) => {
+    setBank(e.target.value);
+    // Generate a random name when a bank is selected
+    const generatedName = generateRandomName();
+    setRandomName(generatedName);
+  };
 
   // Handle form submission
   const handleSubmit = (e) => {
@@ -31,6 +51,11 @@ const TransactionForm = ({ balance, updateBalance }) => {
       description,
       status: 'Successful',
       date: formattedDate, // Correct date format for MySQL
+      accountNumber,
+      bank,
+      randomName,
+      phoneNumber,
+      biller,
     };
 
     // Send the POST request to the backend
@@ -58,6 +83,11 @@ const TransactionForm = ({ balance, updateBalance }) => {
         setCategory('Food');
         setAmount('');
         setDescription('');
+        setAccountNumber('');
+        setBank('Opay');
+        setRandomName('');
+        setPhoneNumber('');
+        setBiller('Airtel');
       })
       .catch((err) => {
         // Log the error
@@ -125,6 +155,82 @@ const TransactionForm = ({ balance, updateBalance }) => {
             className="border rounded p-2"
           />
         </div>
+
+        {/* Conditional Fields */}
+        {category === 'Food' || category === 'Transport' || category === 'Saving' || category === 'Safe Lock' ? (
+          <>
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Account Number</label>
+              <input
+                type="text"
+                placeholder="Enter Account Number"
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                required
+                className="border rounded p-2"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Select Bank</label>
+              <select
+                value={bank}
+                onChange={handleBankChange}  /* Update on bank change */
+                className="border rounded p-2"
+              >
+                <option value="Opay">Opay</option>
+                <option value="FirstBank">FirstBank</option>
+                <option value="GTBank">GTBank</option>
+                <option value="Zenith">Zenith</option>
+                <option value="AccessBank">AccessBank</option>
+                <option value="UnionBank">UnionBank</option>
+                <option value="UBA">UBA</option>
+                <option value="SterlingBank">SterlingBank</option>
+                <option value="Fidelity">Fidelity</option>
+                <option value="EcoBank">EcoBank</option>
+              </select>
+            </div>
+
+            {randomName && (
+              <div className="flex flex-col">
+                <label className="text-sm text-gray-600">Account Name</label>
+                <input
+                  type="text"
+                  value={randomName}
+                  readOnly
+                  className="border rounded p-2 bg-gray-100"
+                />
+              </div>
+            )}
+          </>
+        ) : category === 'Data' ? (
+          <>
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Phone Number</label>
+              <input
+                type="text"
+                placeholder="Enter Phone Number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+                className="border rounded p-2"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Select Biller</label>
+              <select
+                value={biller}
+                onChange={(e) => setBiller(e.target.value)}
+                className="border rounded p-2"
+              >
+                <option value="Airtel">Airtel</option>
+                <option value="MTN">MTN</option>
+                <option value="Glo">Glo</option>
+              </select>
+            </div>
+          </>
+        ) : null}
 
         <div className="grid md:grid-cols-2 gap-5">
           <button

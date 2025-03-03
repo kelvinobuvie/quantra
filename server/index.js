@@ -14,7 +14,31 @@ const pool = mysql.createPool({
   database: 'quantra'
 });
 
-// Get all transactions
+// Handle transactions (updated to accept new fields)
+app.post('/api/transactions', (req, res) => {
+  const { category, amount, description, status, date, accountNumber, bank, randomName, phoneNumber, biller } = req.body;
+
+  // Ensure all required fields are provided
+  if (!category || !amount || !description || !status || !date) {
+    return res.status(400).json({ status: 'Failed', message: "Missing required fields" });
+  }
+
+  const query = `
+    INSERT INTO transactions (category, amount, description, status, date, accountNumber, bank, randomName, phoneNumber, biller)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  pool.query(query, [category, amount, description, status, date, accountNumber, bank, randomName, phoneNumber, biller], (err, result) => {
+    if (err) {
+      console.error('Error inserting transaction:', err);
+      return res.status(500).json({ status: 'Failed', message: 'Error adding transaction', error: err });
+    }
+
+    res.status(201).json({ status: 'Successful', message: 'Transaction added successfully' });
+  });
+});
+
+// Get all transactions (no change here)
 app.get('/api/transactions', (req, res) => {
   pool.query('SELECT * FROM transactions', (err, results) => {
     if (err) {
@@ -26,29 +50,8 @@ app.get('/api/transactions', (req, res) => {
   });
 });
 
-// Handle transactions
-app.post('/api/transactions', (req, res) => {
-  const { category, amount, description, status, date } = req.body;
-
-  if (!category || !amount || !description) {
-    return res.status(400).json({ status: 'Failed', message: "Missing required fields" });
-  }
-
-  const query = 'INSERT INTO transactions (category, amount, description, status, date) VALUES (?, ?, ?, ?, ?)';
-
-  pool.query(query, [category, amount, description, status, date], (err, result) => {
-    if (err) {
-      console.error('Error inserting transaction:', err);
-      return res.status(500).json({ status: 'Failed', message: 'Error adding transaction', error: err });
-    }
-
-    res.status(201).json({ status: 'Successful', message: 'Transaction added successfully' });
-  });
-});
-
-// Get transactions where category is 'Savings' or 'Safe Lock'
+// Example: Get transactions with specific category (e.g., 'Savings' or 'Safe Lock')
 app.get('/api/transactions/savings-safelock', (req, res) => {
-  // SQL query to fetch transactions with category 'Savings' or 'Safe Lock'
   const query = "SELECT * FROM transactions WHERE category IN ('Saving', 'Safe Lock')";
 
   pool.query(query, (err, results) => {
@@ -56,64 +59,11 @@ app.get('/api/transactions/savings-safelock', (req, res) => {
       return res.status(500).json({ status: 'Failed', message: 'Error fetching transactions', error: err });
     }
 
-    // Return the transactions as a JSON response
     res.status(200).json({ status: 'Successful', transactions: results });
   });
 });
 
-// Get count of transactions where category is 'Savings' or 'Safe Lock'
-app.get('/api/transactions/count/savings-safelock', (req, res) => {
-  // SQL query to count transactions with category 'Savings' or 'Safe Lock'
-  const query = "SELECT COUNT(*) AS count FROM transactions WHERE category IN ('Saving', 'Safe Lock')";
-
-  pool.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ status: 'Failed', message: 'Error fetching transaction count', error: err });
-    }
-
-    // Send the count as part of the response
-    const count = results[0]?.count || 0;
-    res.status(200).json({ status: 'Successful', count });
-  });
-});
-
-// app.get('/api/transactions/summary/savings-safelock', (req, res) => {
-//   // SQL query to count transactions with category 'Savings' or 'Safe Lock'
-//   const query = `SELECT description, status 
-//       FROM transactions
-//       WHERE category IN ('Saving', 'Safe Lock')`;
-
-//   pool.query(query, (err, results) => {
-//     if (err) {
-//       return res.status(500).json({ status: 'Failed', message: 'Error fetching transaction count', error: err });
-//     }
-
-//     // Send the count as part of the response
-//     const count = results[0]?.count || 0;
-//     res.status(200).json({ status: 'Successful', count });
-//   });
-// });
-
-// Assuming you have an Express app setup
-// app.get('/api/transactions/total/savings-safelock', (req, res) => {
-//   const query = `
-//     SELECT SUM(amount) AS total
-//     FROM transactions
-//     WHERE category IN ('Saving', 'Safe Lock');
-//   `;
-  
-//   pool.query(query, (err, results) => {
-//     if (err) {
-//       console.error('Error fetching total amount:', err);
-//       return res.status(500).json({ message: 'Error fetching total amount', error: err });
-//     }
-
-//     const totalAmount = results[0]?.total || 0; // If no transactions, default to 0
-//     res.json({ total: totalAmount });
-//   });
-// });
-
-// API route to get total amount for Savings and Safe Lock categories
+// Get total amount for Savings and Safe Lock categories
 app.get('/api/total-goals-amount', (req, res) => {
   const query = `
     SELECT SUM(amount) AS totalAmount
@@ -127,14 +77,12 @@ app.get('/api/total-goals-amount', (req, res) => {
       return res.status(500).json({ message: 'Error fetching total amount', error: err });
     }
 
-    // Return the total amount of the Savings and Safe Lock categories
     const totalAmount = results[0]?.totalAmount || 0;
     res.json({ totalAmount });
   });
 });
 
-
-// API route to get total amount excluding Savings and Safe Lock categories
+// Get total amount excluding Savings and Safe Lock categories
 app.get('/api/transactions/total', (req, res) => {
   const query = `
     SELECT SUM(amount) AS totalAmount
@@ -148,7 +96,6 @@ app.get('/api/transactions/total', (req, res) => {
       return res.status(500).json({ message: 'Error fetching total amount', error: err });
     }
 
-    // Return the total amount of transactions excluding Savings and Safe Lock
     const totalAmount = results[0]?.totalAmount || 0;
     res.json({ totalAmount });
   });
@@ -167,14 +114,23 @@ app.get('/api/transactions/category-sums', (req, res) => {
       return res.status(500).json({ message: 'Error fetching category sums', error: err });
     }
 
-    res.json(results);  // Returns an array of categories and their total amounts
+    res.json(results);
   });
 });
 
 
+app.get('/api/transactions/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM transactions WHERE id = ?';
+  pool.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', message: 'Error fetching transaction', error: err });
+    }
+    res.status(200).json({ status: 'Successful', transaction: results[0] });
+  });
+});
 
 
-
-// Start Server
+// Start the server
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

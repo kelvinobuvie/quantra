@@ -69,7 +69,7 @@ const CategoryBarChart = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-semibold mb-4">Total Amount per Category</h2>
+      <h2 className="text-md font-semibold mb-4 text-gray-400">Total Amount per Category</h2>
 
       {loading ? (
         <p>Loading...</p>  // Show loading message while fetching
