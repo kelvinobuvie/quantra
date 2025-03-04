@@ -5,7 +5,7 @@ import Balance from './Balance';
 
 // Function to generate a random name
 const generateRandomName = () => {
-  const names = ['John Doe', 'Jane Smith', 'Michael Johnson', 'Emily Davis', 'Chris Lee', 'Sarah Brown', 'David Wilson', 'Jessica Harris', 'James Clark', 'Laura Lewis'];
+  const names = ['Chijioke Okafor', 'Ngozi Adebayo', 'Oluwaseun Adedeji', 'Chinonso Eze', 'Ifeanyi Nwosu', 'Mojisola Adeyemi', 'Kelechi Obinna', 'Ngozi Uche', 'Chuka Nwachukwu', 'Tosin Olamide'];
   const randomIndex = Math.floor(Math.random() * names.length);
   return names[randomIndex];
 };

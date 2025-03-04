@@ -20,7 +20,7 @@ const SideBar = () => {
         {/* Profile Section */}
         <div className='mt-3 mb-7 w-full px-4 flex items-right gap-3'>
           <div className='text-white mt-2 px-4'>
-            <p className='font-semibold'>John Doe</p>
+            <p className='font-semibold'>Oluwaseun Adedeji</p>
             <p className='text-xs'>Account ID: 123-456-7890</p>
           </div>
         </div>
@@ -62,13 +62,13 @@ const SideBar = () => {
         {/* Profile and Settings at the bottom */}
         <ul className="mt-auto px-4 flex flex-col gap-3">
           <li className='text-sm gap-5 hover:bg-white py-2'>
-            <NavLink to="/investment" className={({ isActive }) => (isActive ? 'text-orange-500 px-3 py-2' : 'text-white px-3 hover:text-orange-500')}>
+            <NavLink to="/" className={({ isActive }) => (isActive ? 'text-orange-500 px-3 py-2' : 'text-white px-3 hover:text-orange-500')}>
               <FaUser className='inline-block w-4 h-5 mr-3 -mt-1'></FaUser>
               Profile
             </NavLink>
           </li>
           <li className='mb- text-sm gap-5 hover:bg-white py-2'>
-            <NavLink to="/investment" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
+            <NavLink to="/" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
               <FaCog className='inline-block w-4 h-5 mr-3 -mt-1'></FaCog>
               Settings
             </NavLink>

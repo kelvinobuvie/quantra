@@ -130,6 +130,21 @@ app.get('/api/transactions/:id', (req, res) => {
   });
 });
 
+app.get('/api/transactions/count/savings-safelock', (req, res) => {
+  // SQL query to count transactions with category 'Savings' or 'Safe Lock'
+  const query = "SELECT COUNT(*) AS count FROM transactions WHERE category IN ('Saving', 'Safe Lock')";
+
+  pool.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', message: 'Error fetching transaction count', error: err });
+    }
+
+    // Send the count as part of the response
+    const count = results[0]?.count || 0;
+    res.status(200).json({ status: 'Successful', count });
+  });
+});
+
 
 // Start the server
 const PORT = 5000;

@@ -7,7 +7,7 @@ const useGoalNamesAndStatus = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/transactions/savings-safelock')
+    axios.get('http://localhost:5000/api/transactions/count/savings-safelock')
       .then(res => {
         console.log(res.data); // Log the response structure to debug
         if (res.data && Array.isArray(res.data)) {
