@@ -6,6 +6,7 @@ import { GrAnalytics } from "react-icons/gr";
 import { AiOutlineStock } from "react-icons/ai";
 import { IoWalletOutline } from "react-icons/io5";
 import { NavLink } from 'react-router-dom'
+import { GiDialPadlock } from "react-icons/gi";
 
 const SideBar = () => {
   return (
@@ -46,17 +47,18 @@ const SideBar = () => {
             </NavLink>
           </li>
           <li className='mb- text-sm gap-5 hover:bg-white py-2'>
+            <NavLink to="/safe-lock-list" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
+              <GiDialPadlock className='inline-block w-4 h-5 mr-3 -mt-1'></GiDialPadlock>
+              Safe Lock
+            </NavLink>
+          </li>
+          <li className='mb- text-sm gap-5 hover:bg-white py-2'>
             <NavLink to="/transaction-history" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
               <GrAnalytics className='inline-block w-4 h-5 mr-3 -mt-1'></GrAnalytics>
               Report & Analytics
             </NavLink>
           </li>
-          <li className='mb- text-sm gap-5 hover:bg-white py-2'>
-            <NavLink to="/safe-lock-list" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
-              <AiOutlineStock className='inline-block w-4 h-5 mr-3 -mt-1'></AiOutlineStock>
-              Investments
-            </NavLink>
-          </li>
+
         </ul>
 
         {/* Profile and Settings at the bottom */}

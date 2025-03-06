@@ -21,7 +21,7 @@ const Targets = ({ balance }) => {
 
   return (
     <div className="lg:ml-56 px-4">
-      <Nav title={"Targets & SafeLock"} />
+      <Nav title={"Targets"} />
  
       
       <div className="mb-4 p-4 bg-gray-100 border rounded shadow-md">

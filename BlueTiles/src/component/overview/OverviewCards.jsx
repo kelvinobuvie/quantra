@@ -4,9 +4,12 @@ import { IoWalletOutline } from "react-icons/io5";
 import { TbTargetArrow } from "react-icons/tb";
 import { GrLineChart } from "react-icons/gr";
 import { TbMoneybag } from "react-icons/tb";
-import GoalCount from "../GoalCount";
+// import GoalCount from "../GoalCount";
 import TotalAmount from "../TotalAmount";
 import TotalGoalsAmount from "../TotalGoalsAmount";
+import LockedSafelocksCount from "../Targets/LockedSafeLocksCount";
+import { IoMdLock } from "react-icons/io";
+
 
 
 
@@ -23,9 +26,9 @@ const OverviewCards = ({ balance }) => {
       note: "Up 15% this month",
     },
     {
-      title: "Active Targets",
-      count: <GoalCount/>,
-      cardImage: <TbTargetArrow className='inline-block w-12 h-12 -mt-1 text-red-500 bg-red-200 py-2 x-3 border rounded-full font-extrabold'></TbTargetArrow>,
+      title: "Active Locks",
+      count: <LockedSafelocksCount />,
+      cardImage: <IoMdLock className='inline-block w-12 h-12 -mt-1 text-red-500 bg-red-200 py-2 x-3 border rounded-full font-extrabold'></IoMdLock>,
       note: "",
     },
     {

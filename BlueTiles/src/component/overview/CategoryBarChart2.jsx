@@ -75,15 +75,16 @@ const CategoryBarChart2 = () => {
 
   return (
     <div className="p-4 flex justify-center items-center ">
-      <div className="w-1/2"> {/* This div will be 50% of the available width */}
-        <h2 className="text-md font-semibold mb-4 text-gray-400 text-center">Total Amount per Category</h2>
+      
+      <div > {/* This div will be 50% of the available width */}
+        <h2 className="text-sm font-semibold mb-1 pt-1 text-gray-400 text-center">Total Amount per Category</h2>
 
         {/* Select input to choose chart type */}
-        <div className="mb-4 text-center">
+        <div className="mb-1 text-center">
           <select 
             value={chartType} 
             onChange={handleChartTypeChange} 
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 font-light text-sm text-white px-2 py-1 rounded"
           >
             <option value="bar">Bar Chart</option>
             <option value="pie">Pie Chart</option>
@@ -95,11 +96,11 @@ const CategoryBarChart2 = () => {
         ) : (
           // Conditionally render Bar or Pie chart based on the selected chart type
           chartType === 'bar' ? (
-            <div style={{ maxWidth: '100%', maxHeight: '400px' }}> {/* Set a max height */}
-              <Bar data={chartData} options={chartOptions} />
+            <div > {/* Set a max height */}
+              <Bar data={chartData} />
             </div>
           ) : (
-            <div style={{ maxWidth: '100%', maxHeight: '400px' }}> {/* Set a max height */}
+            <div > {/* Set a max height */}
               <Pie data={chartData} />
             </div>
           )

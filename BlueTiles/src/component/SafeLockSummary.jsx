@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Nav from '../../component/Nav';
-import Balance from '../../Pages/Wallet/Balance';
+// import Nav from '../../component/Nav';
+// import Balance from '../../Pages/Wallet/Balance';
 
-const SafeLockList = ({ balance, addBalance }) => {
+const SafeLockSummary = ({ balance, addBalance }) => {
   const navigate = useNavigate();
   const [safelocks, setSafelocks] = useState([]);
   const [filteredSafelocks, setFilteredSafelocks] = useState([]);
@@ -62,8 +62,8 @@ const SafeLockList = ({ balance, addBalance }) => {
   };
 
   return (
-    <div className="lg:ml-56 px-4">
-      <Nav title={"Safe Lock"} />
+    <div className="">
+
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -71,22 +71,33 @@ const SafeLockList = ({ balance, addBalance }) => {
       ) : (
         <div>
           {/* Display Balance */}
-          <div className="mb-4 p-4 bg-gray-100 border rounded shadow-md">
+          {/* <div className="mb-4 p-4 bg-gray-100 border rounded shadow-md">
             <h2 className="text-xl font-bold">Balance</h2>
             <Balance balance={balance} />
-          </div>
+          </div> */}
 
           {/* New Safe Lock Button */}
-          <div className="flex gap-5">
+          {/* <div className="flex gap-5">
             <button
               className="bg-orange-500 text-white font-bold px-4 py-2 hover:bg-orange-700 mb-4"
               onClick={() => navigate('/safe-lock-form')}
             >
               New Safe Lock
             </button>
-          </div>
+          </div> */}
 
           {/* Filter by Status */}
+
+
+          <div className="flex justify-between py-4">
+          <p className="text-sm font-semibold text-blue-950">Safe Lock Transactions</p>
+          <a
+          onClick={() => navigate('/transaction-history')}
+          className="text-xs text-orange-500 font-medium inline-block hover:underline viewall"
+            >
+            View all
+            </a>
+          </div>
           <div className="mb-4">
             <label htmlFor="statusFilter" className="block text-sm font-semibold text-blue-950 mb-2">Filter by Status:</label>
             <select
@@ -100,8 +111,6 @@ const SafeLockList = ({ balance, addBalance }) => {
               <option value="Unlocked" className="font-medium text-xs text-blue-950">Unlocked</option>
             </select>
           </div>
-
-          <p className="text-sm font-semibold text-blue-950">Safe Lock Transactions</p>
           <div className="mt-2 p-4 bg-white rounded-lg shadow-md h-80 overflow-y-auto">
             <table className="min-w-full bg-white border-collapse">
               <thead className="text-gray-500 text-xs">
@@ -111,7 +120,7 @@ const SafeLockList = ({ balance, addBalance }) => {
                   <th className="border-b py-4 px-1 text-left">Amount</th>
                   <th className="border-b py-4 px-1 text-left">Status</th>
                   <th className="border-b py-4 px-1 text-left">Release Date</th>
-                  <th className="border-b py-4 px-1 text-left">Actions</th>
+                  {/* <th className="border-b py-4 px-1 text-left">Actions</th> */}
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -130,14 +139,14 @@ const SafeLockList = ({ balance, addBalance }) => {
                     <td className="border-b py-4 px-1 text-blue-950">
                       {new Date(safelock.releaseDate).toLocaleDateString()}
                     </td>
-                    <td className="border-b py-4 px-1 text-blue-950">
+                    {/* <td className="border-b py-4 px-1 text-blue-950">
                       <button
                         onClick={() => handleShowReceipt(safelock)}
                         className="text-xs font-bold text-white py-2 px-2 rounded-lg bg-orange-500 hover:bg-orange-900"
                       >
                         View Receipt
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>
@@ -192,4 +201,4 @@ const SafeLockList = ({ balance, addBalance }) => {
   );
 };
 
-export default SafeLockList;
+export default SafeLockSummary;

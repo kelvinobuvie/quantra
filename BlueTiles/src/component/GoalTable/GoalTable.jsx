@@ -110,7 +110,7 @@ const GoalTable = () => {
       </div>
 
       {/* Category filter dropdown */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label
           htmlFor="category-select"
           className="block text-sm font-semibold text-blue-950 mb-2"
@@ -129,7 +129,7 @@ const GoalTable = () => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       <table className="min-w-full bg-white border-collapse">
         <thead className="text-gray-500 text-xs">

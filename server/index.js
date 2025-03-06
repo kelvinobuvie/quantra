@@ -103,21 +103,83 @@ app.get('/api/transactions/total', (req, res) => {
 });
 
 // Get sum of each individual category (savings, safe lock, etc.)
+// app.get('/api/transactions/category-sums', (req, res) => {
+//   const query = `
+//     SELECT category, SUM(amount) AS total_amount
+//     FROM transactions
+//     GROUP BY category;
+//   `;
+
+//   pool.query(query, (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ message: 'Error fetching category sums', error: err });
+//     }
+
+//     res.json(results);
+//   });
+// });
+
+// Endpoint to fetch category sums, including Safe Lock
 app.get('/api/transactions/category-sums', (req, res) => {
+  // Query to get sums of all categories, including Safe Lock
   const query = `
-    SELECT category, SUM(amount) AS total_amount
-    FROM transactions
+    SELECT category, SUM(amount) as total_amount
+    FROM (
+      SELECT 'Food' as category, amount FROM transactions WHERE category = 'Food'
+      UNION ALL
+      SELECT 'Transport', amount FROM transactions WHERE category = 'Transport'
+      UNION ALL
+      SELECT 'Data', amount FROM transactions WHERE category = 'Data'
+      UNION ALL
+      SELECT 'Saving', amount FROM transactions WHERE category = 'Saving'
+      UNION ALL
+      SELECT 'Safe Lock', amount FROM safelocks
+    ) as categories
     GROUP BY category;
   `;
-
-  pool.query(query, (err, results) => {
+  
+  pool.query(query, (err, result) => {
     if (err) {
-      return res.status(500).json({ message: 'Error fetching category sums', error: err });
+      console.error(err);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
 
-    res.json(results);
+    // Send the result as a response
+    res.json(result);
   });
 });
+
+
+app.get('/api/transactions/category-counts', (req, res) => {
+  // Query to get counts of all categories, including Safe Lock
+  const query = `
+    SELECT category, COUNT(*) as total_count
+    FROM (
+      SELECT 'Food' as category FROM transactions WHERE category = 'Food'
+      UNION ALL
+      SELECT 'Transport' FROM transactions WHERE category = 'Transport'
+      UNION ALL
+      SELECT 'Data' FROM transactions WHERE category = 'Data'
+      UNION ALL
+      SELECT 'Saving' FROM transactions WHERE category = 'Saving'
+      UNION ALL
+      SELECT 'Safe Lock' FROM safelocks
+    ) as categories
+    GROUP BY category;
+  `;
+  
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    // Send the result as a response
+    res.json(result);
+  });
+});
+
+
 
 
 app.get('/api/transactions/:id', (req, res) => {
@@ -211,6 +273,29 @@ app.get('/api/safelocks2/:id', (req, res) => {
     }
   });
 });
+
+// Endpoint to get the count of locked safelocks
+app.get('/api/safelocks/locked-count', (req, res) => {
+  // Query to count the number of locked safelocks
+  const query = `
+    SELECT COUNT(*) as locked_count
+    FROM safelocks
+    WHERE status = 'Locked';
+  `;
+  
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    // Return the count of locked safelocks
+    res.json({
+      locked_count: result[0].locked_count
+    });
+  });
+});
+
 
 
 const PORT = 5000;

@@ -38,9 +38,9 @@ const Wallet = ({ balance }) => {
         </button>
         <button 
           className="bg-orange-500 text-white font-bold px-4 py-2 hover:bg-orange-700 mb-4"
-          onClick={() => navigate('/targets')}
+          onClick={() => navigate('/safe-lock-list')}
         >
-          View Targets
+          View Locks
         </button>
       </div>
 
