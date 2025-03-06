@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cron = require('node-cron');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const app = express();
@@ -146,6 +147,71 @@ app.get('/api/transactions/count/savings-safelock', (req, res) => {
 });
 
 
-// Start the server
+// Start a cron job that runs every minute (you can adjust the interval as needed)
+cron.schedule('* * * * *', () => {
+  console.log('Running cron job to check safelocks status update...');
+  
+  // Check for any safelocks where the releaseDate has passed and status is still 'Locked'
+  const query = `UPDATE safelocks
+                 SET status = 'Unlocked'
+                 WHERE status = 'Locked' AND releaseDate <= NOW()`;
+
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error('Error updating safelocks status:', err);
+    } else {
+      console.log(`Safelocks status updated for ${result.affectedRows} record(s).`);
+    }
+  });
+});
+
+// Create a route to handle Safe Lock creation (existing API)
+app.post('/api/safelocks', (req, res) => {
+  const { description, amount, releaseDate, status } = req.body;
+
+  const query = `
+    INSERT INTO safelocks (description, amount, releaseDate, status)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  pool.query(query, [description, amount, releaseDate, status], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+    res.status(200).json({ status: 'Successful', message: 'Safe Lock Created' });
+  });
+});
+
+
+
+app.get('/api/safelock2', (req, res) => {
+  pool.query('SELECT * FROM safelocks', (err, results) => {
+    if (err) {
+      console.error('Error retrieving transactions:', err);
+      return res.status(500).json({ status: 'Failed', message: 'Error retrieving transactions', error: err });
+    }
+
+    res.status(200).json({ status: 'Successful', transactions: results });
+  });
+});
+
+app.get('/api/safelocks2/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM safelocks WHERE id = ?';
+  pool.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', message: 'Error fetching transaction', error: err });
+    }
+    if (results.length > 0) {
+      res.status(200).json({ status: 'Successful', safelock: results[0] }); // Change "transaction" to "safelock"
+    } else {
+      res.status(404).json({ status: 'Failed', message: 'Safelock not found' });
+    }
+  });
+});
+
+
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

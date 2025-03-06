@@ -52,7 +52,7 @@ const SideBar = () => {
             </NavLink>
           </li>
           <li className='mb- text-sm gap-5 hover:bg-white py-2'>
-            <NavLink to="/investment" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
+            <NavLink to="/safe-lock-list" className={({ isActive }) => (isActive ? 'text-orange-500 px-3' : 'text-white px-3 hover:text-orange-500')}>
               <AiOutlineStock className='inline-block w-4 h-5 mr-3 -mt-1'></AiOutlineStock>
               Investments
             </NavLink>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
 import Balance from './Balance';
 
 // Function to generate a random name
@@ -10,47 +10,53 @@ const generateRandomName = () => {
   return names[randomIndex];
 };
 
-const TransactionForm = ({ balance, updateBalance }) => {
+const TransactionForm = ({ balance, deductBalance }) => {
   const [category, setCategory] = useState('Food');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [alert, setAlert] = useState(null); // For showing success or error alerts
+  const [alert, setAlert] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [bank, setBank] = useState('Opay');
   const [randomName, setRandomName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [biller, setBiller] = useState('Airtel');
-  const navigate = useNavigate(); // Hook to navigate programmatically
+  const navigate = useNavigate();
 
   // Handle bank change and generate random name
   const handleBankChange = (e) => {
     setBank(e.target.value);
-    // Generate a random name when a bank is selected
     const generatedName = generateRandomName();
     setRandomName(generatedName);
   };
 
-  // Handle form submission
+  // Handle category change and redirect to SafeLockForm if "Safe Lock" is selected
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    setCategory(selectedCategory);
+    if (selectedCategory === 'Safe Lock') {
+      navigate('/safe-lock-form');
+    }
+  };
+
+  // Handle form submission for other categories (non-Safe Lock)
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Check if the amount is less than or equal to the available balance
     if (parseInt(amount) > balance) {
       setAlert({ type: 'error', message: 'Transaction Failed: Insufficient Balance' });
-      return;  // Exit if balance is insufficient
+      return;
     }
 
-    // Get current date in 'YYYY-MM-DD HH:MM' format
     const date = new Date();
-    const formattedDate = date.toISOString().slice(0, 16).replace('T', ' '); // Removing seconds
+    const formattedDate = date.toISOString().slice(0, 16).replace('T', ' ');
 
-    // Create the new transaction object
     const newTransaction = {
       category,
       amount: parseInt(amount),
       description,
       status: 'Successful',
-      date: formattedDate, // Correct date format for MySQL
+      date: formattedDate,
       accountNumber,
       bank,
       randomName,
@@ -61,20 +67,14 @@ const TransactionForm = ({ balance, updateBalance }) => {
     // Send the POST request to the backend
     axios.post('http://localhost:5000/api/transactions', newTransaction)
       .then((res) => {
-        // Log the response to see what the backend returns
-        console.log('Backend Response:', res);
-
-        // If the response status is successful
         if (res.data.status === 'Successful') {
-          // Update the balance by calling the updateBalance function passed from App.js
-          updateBalance(parseInt(amount));
+          deductBalance(parseInt(amount));  // Deduct from balance after successful transaction
 
           setAlert({ type: 'success', message: 'Transaction Successful!' });
 
-          // Redirect to the wallet page after successful transaction
           setTimeout(() => {
-            navigate('/wallet');  // Redirect to the wallet page
-          }, 1500); // Delay to give the user time to see the success alert
+            navigate('/wallet');
+          }, 1500);
         } else {
           setAlert({ type: 'error', message: 'Transaction Failed' });
         }
@@ -90,10 +90,7 @@ const TransactionForm = ({ balance, updateBalance }) => {
         setBiller('Airtel');
       })
       .catch((err) => {
-        // Log the error
         console.error('Error:', err);
-
-        // Display error alert
         setAlert({ type: 'error', message: 'Transaction Failed: Internal Server Error' });
       });
   };
@@ -121,7 +118,7 @@ const TransactionForm = ({ balance, updateBalance }) => {
           <label className="text-sm text-gray-600">Transaction Category</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={handleCategoryChange}
             className="border rounded p-2"
           >
             <option value="Food">Food</option>
@@ -157,7 +154,7 @@ const TransactionForm = ({ balance, updateBalance }) => {
         </div>
 
         {/* Conditional Fields */}
-        {category === 'Food' || category === 'Transport' || category === 'Saving' || category === 'Safe Lock' ? (
+        {category !== 'Data' && category !== 'Safe Lock' && (
           <>
             <div className="flex flex-col">
               <label className="text-sm text-gray-600">Account Number</label>
@@ -175,7 +172,7 @@ const TransactionForm = ({ balance, updateBalance }) => {
               <label className="text-sm text-gray-600">Select Bank</label>
               <select
                 value={bank}
-                onChange={handleBankChange}  /* Update on bank change */
+                onChange={handleBankChange}
                 className="border rounded p-2"
               >
                 <option value="Opay">Opay</option>
@@ -203,34 +200,7 @@ const TransactionForm = ({ balance, updateBalance }) => {
               </div>
             )}
           </>
-        ) : category === 'Data' ? (
-          <>
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600">Phone Number</label>
-              <input
-                type="text"
-                placeholder="Enter Phone Number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                required
-                className="border rounded p-2"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600">Select Biller</label>
-              <select
-                value={biller}
-                onChange={(e) => setBiller(e.target.value)}
-                className="border rounded p-2"
-              >
-                <option value="Airtel">Airtel</option>
-                <option value="MTN">MTN</option>
-                <option value="Glo">Glo</option>
-              </select>
-            </div>
-          </>
-        ) : null}
+        )}
 
         <div className="grid md:grid-cols-2 gap-5">
           <button

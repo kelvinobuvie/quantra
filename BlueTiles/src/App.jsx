@@ -9,14 +9,21 @@ import Wallet from './Pages/Wallet/Wallet';
 import TransactionForm from './Pages/Wallet/TransactionForm';
 import Targets from './component/Targets/Targets';
 import TransactionHistory from './Pages/TransactionHistory';
-import Investment from './Pages/Investment';
+
+import SafeLockForm from './Pages/Wallet/SafeLockForm';
+import SafeLockList from './Pages/Wallet/SafeLockList';
 
 const App = () => {
   // Centralized Balance State
   const [balance, setBalance] = useState(200000);
 
-  // Function to update balance after a transaction
-  const updateBalance = (amount) => {
+  // Function to update balance by adding amount
+  const addBalance = (amount) => {
+    setBalance(prevBalance => prevBalance + amount);
+  };
+
+  // Function to update balance by deducting amount
+  const deductBalance = (amount) => {
     setBalance(prevBalance => prevBalance - amount);
   };
 
@@ -28,13 +35,15 @@ const App = () => {
         {/* Main Layout */}
         <Route path='/' element={<MainLayout />}>
           <Route index element={<Navigate to='login' />} />
-          <Route path='overview' element={<Overview   balance={balance}/>} />
+          <Route path='overview' element={<Overview balance={balance} />} />
           <Route path='new-target' element={<GoalForm />} />
+          <Route path="/safe-lock-form" element={<SafeLockForm balance={balance}  deductBalance={deductBalance} />} />
           <Route path='wallet' element={<Wallet balance={balance} />} />
           <Route path='targets' element={<Targets balance={balance} />} />
-          <Route path='new-transaction' element={<TransactionForm balance={balance} updateBalance={updateBalance} />} />
+          <Route path='new-transaction' element={<TransactionForm balance={balance} deductBalance={deductBalance} />} />
           <Route path='transaction-history' element={<TransactionHistory />} />
-          <Route path='investment' element={<Investment />} />
+        
+          <Route path='safe-lock-list' element={<SafeLockList addBalance={addBalance} balance={balance} />} />
         </Route>
       </Routes>
     </Router>

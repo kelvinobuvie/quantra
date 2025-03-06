@@ -5,7 +5,7 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 
-const CategoryBarChart = () => {
+const CategoryBarChart2 = () => {
   const [categorySums, setCategorySums] = useState([]);  // State to hold the fetched data
   const [loading, setLoading] = useState(true);  // Loading state
   const [chartType, setChartType] = useState('bar'); // State to toggle between bar and pie chart
@@ -74,31 +74,39 @@ const CategoryBarChart = () => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-md font-semibold mb-4 text-gray-400">Total Amount per Category</h2>
+    <div className="p-4 flex justify-center items-center ">
+      <div className="w-1/2"> {/* This div will be 50% of the available width */}
+        <h2 className="text-md font-semibold mb-4 text-gray-400 text-center">Total Amount per Category</h2>
 
-      {/* Select input to choose chart type */}
-      <select 
-        value={chartType} 
-        onChange={handleChartTypeChange} 
-        className="text-black px-4 py-2 rounded mb-4 text-sm border-g"
-      >
-        <option value="bar">Bar Chart</option>
-        <option value="pie">Pie Chart</option>
-      </select>
+        {/* Select input to choose chart type */}
+        <div className="mb-4 text-center">
+          <select 
+            value={chartType} 
+            onChange={handleChartTypeChange} 
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            <option value="bar">Bar Chart</option>
+            <option value="pie">Pie Chart</option>
+          </select>
+        </div>
 
-      {loading ? (
-        <p>Loading...</p>  // Show loading message while fetching
-      ) : (
-        // Conditionally render Bar or Pie chart based on the selected chart type
-        chartType === 'bar' ? (
-          <Bar data={chartData} options={chartOptions} />
+        {loading ? (
+          <p className="text-center">Loading...</p>  // Show loading message while fetching
         ) : (
-          <Pie data={chartData} />
-        )
-      )}
+          // Conditionally render Bar or Pie chart based on the selected chart type
+          chartType === 'bar' ? (
+            <div style={{ maxWidth: '100%', maxHeight: '400px' }}> {/* Set a max height */}
+              <Bar data={chartData} options={chartOptions} />
+            </div>
+          ) : (
+            <div style={{ maxWidth: '100%', maxHeight: '400px' }}> {/* Set a max height */}
+              <Pie data={chartData} />
+            </div>
+          )
+        )}
+      </div>
     </div>
   );
 };
 
-export default CategoryBarChart;
+export default CategoryBarChart2;

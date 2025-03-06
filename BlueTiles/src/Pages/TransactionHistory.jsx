@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TransactionList from './Wallet/TransactionList';
 import GoalTable from '../component/GoalTable/GoalTable';
-import CategoryBarChart from '../component/overview/CategoryBarChart';
+// import CategoryBarChart from '../component/overview/CategoryBarChart';
+import CategoryBarChart2 from '../component/overview/CategoryBarChart2';
 // import TransactionList from './TransactionList';
 
 const TransactionHistory = () => {
@@ -32,7 +33,7 @@ const TransactionHistory = () => {
       {/* TransactionList Component */}
       <TransactionList transactions={transactions} />
 
-      <CategoryBarChart/>
+      <CategoryBarChart2/>
     </div>
   );
 };

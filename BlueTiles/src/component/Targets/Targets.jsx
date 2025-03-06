@@ -7,16 +7,17 @@ import Nav from '../Nav';
 import GoalTable from '../GoalTable/GoalTable';
 
 
+
 const Targets = ({ balance }) => {
   const [goals, setGoals] = useState([]);
   const navigate = useNavigate();
 
   // Fetch transactions on component load
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/goals')
-      .then(res => setGoals(res.data))
-      .catch(err => console.error(err));
-  }, []);
+  // useEffect(() => {
+  //   axios.get('http://localhost:5000/api/goals')
+  //     .then(res => setGoals(res.data))
+  //     .catch(err => console.error(err));
+  // }, []);
 
   return (
     <div className="lg:ml-56 px-4">
@@ -40,6 +41,7 @@ const Targets = ({ balance }) => {
 
       {/* Transaction List */}
       <GoalTable goals={goals} />
+
     </div>
   );
 };
