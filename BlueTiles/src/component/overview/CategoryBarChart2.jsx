@@ -16,7 +16,8 @@ const CategoryBarChart2 = () => {
     Transport: 'rgba(30,64,175)', // Blueish
     Data: 'rgba(234,179,8)', // Yellowish
     Saving: 'rgba(22,163,74)', // Greenish
-    'Safe Lock': 'rgba(168,85,247)' // Purpleish
+    'Safe Lock': 'rgba(168,85,247)', // Purpleish
+    Clothing: 'rgba(56,189,248)' // Add a new color for Clothing (light blue)
   };
 
   // Fetch category sums from backend
@@ -86,8 +87,9 @@ const CategoryBarChart2 = () => {
             onChange={handleChartTypeChange} 
             className="bg-blue-500 font-light text-sm text-white px-2 py-1 rounded"
           >
-            <option value="bar">Bar Chart</option>
             <option value="pie">Pie Chart</option>
+            <option value="bar">Bar Chart</option>
+
           </select>
         </div>
 
@@ -95,7 +97,7 @@ const CategoryBarChart2 = () => {
           <p className="text-center">Loading...</p>  // Show loading message while fetching
         ) : (
           // Conditionally render Bar or Pie chart based on the selected chart type
-          chartType === 'bar' ? (
+          chartType === 'pie' ? (
             <div > {/* Set a max height */}
               <Bar data={chartData} />
             </div>

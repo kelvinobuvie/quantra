@@ -92,7 +92,7 @@ const SafeLockSummary = ({ balance, addBalance }) => {
           <div className="flex justify-between py-4">
           <p className="text-sm font-semibold text-blue-950">Safe Lock Transactions</p>
           <a
-          onClick={() => navigate('/transaction-history')}
+          onClick={() => navigate('/safe-lock-list')}
           className="text-xs text-orange-500 font-medium inline-block hover:underline viewall"
             >
             View all

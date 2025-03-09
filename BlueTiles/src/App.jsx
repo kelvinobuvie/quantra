@@ -54,7 +54,7 @@ const App = () => {
 const MainLayout = () => {
   return (
     <div className='flex'>
-      <SideBar />
+      <SideBar  />
       <div className='flex-grow p-4'>
         <Outlet />
       </div>

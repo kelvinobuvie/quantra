@@ -83,8 +83,8 @@ const CategoryBarChart = () => {
         onChange={handleChartTypeChange} 
         className="text-black px-4 py-2 rounded mb-4 text-sm border-g"
       >
-        <option value="bar">Bar Chart</option>
         <option value="pie">Pie Chart</option>
+        <option value="bar">Bar Chart</option>
       </select>
 
       {loading ? (
@@ -92,9 +92,9 @@ const CategoryBarChart = () => {
       ) : (
         // Conditionally render Bar or Pie chart based on the selected chart type
         chartType === 'bar' ? (
-          <Bar data={chartData} options={chartOptions} />
+          <Bar data={chartData}  />
         ) : (
-          <Pie data={chartData} />
+          <Pie data={chartData}  />
         )
       )}
     </div>

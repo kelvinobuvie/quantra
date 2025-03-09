@@ -15,6 +15,61 @@ const pool = mysql.createPool({
   database: 'quantra'
 });
 
+// Sign Up API
+app.post('/api/signup', (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+  
+  // Validate the input
+  if (!firstName || !lastName || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  // Insert user into the database
+  const query = 'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
+  pool.query(query, [firstName, lastName, email, password], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Email is already in Use' });
+    }
+
+    res.status(200).json({ message: 'User created successfully' });
+  });
+});
+
+
+
+// Sign In API
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
+
+  const query = 'SELECT * FROM users WHERE email = ?';
+  pool.query(query, [email], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    if (result.length === 0 || result[0].password !== password) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Send the user's first name and last name in the response
+    res.status(200).json({
+      message: 'Login successful',
+      firstName: result[0].first_name,
+      lastName: result[0].last_name,
+    });
+  });
+});
+
+
+
+
+
 // Handle transactions (updated to accept new fields)
 app.post('/api/transactions', (req, res) => {
   const { category, amount, description, status, date, accountNumber, bank, randomName, phoneNumber, biller } = req.body;
@@ -162,6 +217,8 @@ app.get('/api/transactions/category-counts', (req, res) => {
       SELECT 'Data' FROM transactions WHERE category = 'Data'
       UNION ALL
       SELECT 'Saving' FROM transactions WHERE category = 'Saving'
+      UNION ALL
+      SELECT 'Clothing' FROM transactions WHERE category = 'Clothing'
       UNION ALL
       SELECT 'Safe Lock' FROM safelocks
     ) as categories

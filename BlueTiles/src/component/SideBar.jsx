@@ -8,7 +8,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { NavLink } from 'react-router-dom'
 import { GiDialPadlock } from "react-icons/gi";
 
-const SideBar = () => {
+const SideBar = ({ user }) => {
   return (
     <>
       <div className={`sidebar active max-lg:hidden flex flex-col w-[216px] py-2 hidden:min-lg:block h-screen mt-0 bg-blue-950 fixed`}>
@@ -21,7 +21,7 @@ const SideBar = () => {
         {/* Profile Section */}
         <div className='mt-3 mb-7 w-full px-4 flex items-right gap-3'>
           <div className='text-white mt-2 px-4'>
-            <p className='font-semibold'>Oluwaseun Adedeji</p>
+            {/* <p className='font-semibold name '>Oluwaseun Adedeji</p> */}
             <p className='text-xs'>Account ID: 123-456-7890</p>
           </div>
         </div>

@@ -20,6 +20,7 @@ const TransactionForm = ({ balance, deductBalance }) => {
   const [randomName, setRandomName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [biller, setBiller] = useState('Airtel');
+  const [loading, setLoading] = useState(false);  // Loader state
   const navigate = useNavigate();
 
   // Handle bank change and generate random name
@@ -48,6 +49,8 @@ const TransactionForm = ({ balance, deductBalance }) => {
       return;
     }
 
+    setLoading(true); // Set loading to true when submitting
+
     const date = new Date();
     const formattedDate = date.toISOString().slice(0, 16).replace('T', ' ');
 
@@ -67,31 +70,35 @@ const TransactionForm = ({ balance, deductBalance }) => {
     // Send the POST request to the backend
     axios.post('http://localhost:5000/api/transactions', newTransaction)
       .then((res) => {
-        if (res.data.status === 'Successful') {
-          deductBalance(parseInt(amount));  // Deduct from balance after successful transaction
+        setTimeout(() => {
+          if (res.data.status === 'Successful') {
+            deductBalance(parseInt(amount));  // Deduct from balance after successful transaction
 
-          setAlert({ type: 'success', message: 'Transaction Successful!' });
+            setAlert({ type: 'success', message: 'Transaction Successful!' });
 
-          setTimeout(() => {
-            navigate('/wallet');
-          }, 1500);
-        } else {
-          setAlert({ type: 'error', message: 'Transaction Failed' });
-        }
+            setTimeout(() => {
+              navigate('/wallet');
+            }, 1500);
+          } else {
+            setAlert({ type: 'error', message: 'Transaction Failed' });
+          }
 
-        // Reset form fields
-        setCategory('Food');
-        setAmount('');
-        setDescription('');
-        setAccountNumber('');
-        setBank('Opay');
-        setRandomName('');
-        setPhoneNumber('');
-        setBiller('Airtel');
+          // Reset form fields
+          setCategory('Food');
+          setAmount('');
+          setDescription('');
+          setAccountNumber('');
+          setBank('Opay');
+          setRandomName('');
+          setPhoneNumber('');
+          setBiller('Airtel');
+          setLoading(false);  // Set loading to false after 3 seconds
+        }, 3000);  // Delay the alert for 3 seconds
       })
       .catch((err) => {
         console.error('Error:', err);
         setAlert({ type: 'error', message: 'Transaction Failed: Internal Server Error' });
+        setLoading(false);  // Set loading to false in case of an error
       });
   };
 
@@ -124,6 +131,7 @@ const TransactionForm = ({ balance, deductBalance }) => {
             <option value="Food">Food</option>
             <option value="Data">Data</option>
             <option value="Transport">Transport</option>
+            <option value="Clothing">Clothing</option>
             <option value="Saving">Savings</option>
             <option value="Safe Lock">Safe Lock</option>
           </select>
@@ -206,11 +214,23 @@ const TransactionForm = ({ balance, deductBalance }) => {
           <button
             type="submit"
             className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-700 font-semibold"
+            disabled={loading}  // Disable the button when loading
           >
-            Submit Transaction
+            {loading ? (
+              <div className="w-6 h-6 border-4 border-t-4 border-blue-500 rounded-full animate-spin"></div>  // Spinner for the button
+            ) : (
+              'Submit Transaction'
+            )}
           </button>
         </div>
       </form>
+
+      {/* Display loader when loading is true */}
+      {loading && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+          <div className="w-16 h-16 border-4 border-t-4 border-blue-950 rounded-full animate-spin"></div> 
+        </div>
+      )}
     </div>
   );
 };
