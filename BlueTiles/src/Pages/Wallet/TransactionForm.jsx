@@ -19,7 +19,7 @@ const TransactionForm = ({ balance, deductBalance }) => {
   const [bank, setBank] = useState('Opay');
   const [randomName, setRandomName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [biller, setBiller] = useState('Airtel');
+  const [biller, setBiller] = useState('Airtel'); // Default value is Airtel
   const [loading, setLoading] = useState(false);  // Loader state
   const navigate = useNavigate();
 
@@ -37,6 +37,11 @@ const TransactionForm = ({ balance, deductBalance }) => {
     if (selectedCategory === 'Safe Lock') {
       navigate('/safe-lock-form');
     }
+  };
+
+  // Handle biller change
+  const handleBillerChange = (e) => {
+    setBiller(e.target.value);
   };
 
   // Handle form submission for other categories (non-Safe Lock)
@@ -161,7 +166,38 @@ const TransactionForm = ({ balance, deductBalance }) => {
           />
         </div>
 
-        {/* Conditional Fields */}
+        {/* Conditional Fields for Data category */}
+        {category === 'Data' && (
+          <>
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Phone Number</label>
+              <input
+                type="text"
+                placeholder="Enter Phone Number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+                className="border rounded p-2"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Biller</label>
+              <select
+                value={biller}
+                onChange={handleBillerChange}
+                className="border rounded p-2"
+              >
+                <option value="Airtel">Airtel</option>
+                <option value="MTN">MTN</option>
+                <option value="Glo">Glo</option>
+                <option value="9Mobile">9Mobile</option>
+              </select>
+            </div>
+          </>
+        )}
+
+        {/* Conditional Fields for Non-Data categories */}
         {category !== 'Data' && category !== 'Safe Lock' && (
           <>
             <div className="flex flex-col">
