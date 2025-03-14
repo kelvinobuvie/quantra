@@ -118,7 +118,7 @@ const SafeLockList = ({ balance, addBalance }) => {
                 {filteredSafelocks.map((safelock) => (
                   <tr key={safelock.id}>
                     <td className="border-b py-4 px-1 text-blue-950">{`QUANTRA0${safelock.id}`}</td>
-                    <td className="border-b py-4 px-1 text-blue-950">{new Date(safelock.createdAt).toLocaleDateString()}</td>
+                    <td className="border-b py-4 px-1 text-blue-950">{new Date(safelock.date).toLocaleDateString()}</td>
                     <td className="border-b py-4 px-1 text-blue-950">₦{safelock.amount}</td>
                     <td
                       className={`border-b py-4 px-1 text-blue-950 ${

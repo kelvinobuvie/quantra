@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
 import { useNavigate } from 'react-router-dom';
-// import Nav from '../../component/Nav';
-// import Balance from '../../Pages/Wallet/Balance';
 
 const SafeLockSummary = ({ balance, addBalance }) => {
   const navigate = useNavigate();
@@ -12,16 +11,17 @@ const SafeLockSummary = ({ balance, addBalance }) => {
   const [error, setError] = useState(null);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [receipt, setReceipt] = useState(null);
-  const [statusFilter, setStatusFilter] = useState(''); // New state to filter by status
+  const [statusFilter, setStatusFilter] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     axios
       .get('http://localhost:5000/api/safelock2')
       .then((response) => {
         const safelocksData = response.data.transactions;
-        // Sort the safelocks by createdAt (latest to least)
         const sortedSafelocks = safelocksData.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          (a, b) => new Date(b.date) - new Date(a.date)
         );
         setSafelocks(sortedSafelocks);
         setFilteredSafelocks(sortedSafelocks);
@@ -34,14 +34,35 @@ const SafeLockSummary = ({ balance, addBalance }) => {
       });
   }, []);
 
-  // Handle filtering by status
+  // Handle filtering by status and date range
+  const applyFilters = (status, start, end) => {
+    let filtered = [...safelocks];
+
+    // Filter by status
+    if (status) {
+      filtered = filtered.filter((safelock) => safelock.status === status);
+    }
+
+    // Filter by date range
+    if (start && end) {
+      filtered = filtered.filter((safelock) => {
+        const safelockDate = new Date(safelock.date);
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        return safelockDate >= startDate && safelockDate <= endDate;
+      });
+    }
+
+    setFilteredSafelocks(filtered);
+  };
+
   const handleStatusFilter = (status) => {
     setStatusFilter(status);
-    if (status === '') {
-      setFilteredSafelocks(safelocks); // Show all if no status filter is applied
-    } else {
-      setFilteredSafelocks(safelocks.filter((safelock) => safelock.status === status));
-    }
+    applyFilters(status, startDate, endDate);
+  };
+
+  const handleDateRangeChange = () => {
+    applyFilters(statusFilter, startDate, endDate);
   };
 
   const handleShowReceipt = (safelock) => {
@@ -61,6 +82,39 @@ const SafeLockSummary = ({ balance, addBalance }) => {
     }
   };
 
+  // Function to generate PDF for the filtered safelocks
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    // Title for the PDF
+    doc.setFontSize(18);
+    doc.text('Safe Lock History', 20, 20);
+
+    // Column headers
+    doc.setFontSize(8);
+    doc.text('Safe Lock ID', 20, 40);
+    doc.text('Date', 60, 40);
+    doc.text('Amount', 100, 40);
+    doc.text('Status', 140, 40);
+    doc.text('Release Date', 180, 40);
+
+    // Set line height
+    let lineHeight = 50;
+
+    // Add safelock rows to the PDF
+    filteredSafelocks.forEach((safelock) => {
+      doc.text(`QUANTRA0${safelock.id}`, 20, lineHeight);
+      doc.text(new Date(safelock.date).toLocaleDateString(), 60, lineHeight);
+      doc.text(`₦${safelock.amount.toLocaleString()}`, 100, lineHeight);
+      doc.text(safelock.status, 140, lineHeight);
+      doc.text(new Date(safelock.releaseDate).toLocaleDateString(), 180, lineHeight);
+      lineHeight += 10;
+    });
+
+    // Save the PDF
+    doc.save('safe-lock-history.pdf');
+  };
+
   return (
     <div className="">
 
@@ -70,36 +124,12 @@ const SafeLockSummary = ({ balance, addBalance }) => {
         <p>{error}</p>
       ) : (
         <div>
-          {/* Display Balance */}
-          {/* <div className="mb-4 p-4 bg-gray-100 border rounded shadow-md">
-            <h2 className="text-xl font-bold">Balance</h2>
-            <Balance balance={balance} />
-          </div> */}
-
-          {/* New Safe Lock Button */}
-          {/* <div className="flex gap-5">
-            <button
-              className="bg-orange-500 text-white font-bold px-4 py-2 hover:bg-orange-700 mb-4"
-              onClick={() => navigate('/safe-lock-form')}
-            >
-              New Safe Lock
-            </button>
-          </div> */}
 
           {/* Filter by Status */}
-
-
-          <div className="flex justify-between py-4">
-          <p className="text-sm font-semibold text-blue-950">Safe Lock Transactions</p>
-          <a
-          onClick={() => navigate('/safe-lock-list')}
-          className="text-xs text-orange-500 font-medium inline-block hover:underline viewall"
-            >
-            View all
-            </a>
-          </div>
           <div className="mb-4">
-            <label htmlFor="statusFilter" className="block text-sm font-semibold text-blue-950 mb-2">Filter by Status:</label>
+            <label htmlFor="statusFilter" className="block text-sm font-semibold text-blue-950 mb-2">
+              Filter by Status:
+            </label>
             <select
               id="statusFilter"
               value={statusFilter}
@@ -111,6 +141,42 @@ const SafeLockSummary = ({ balance, addBalance }) => {
               <option value="Unlocked" className="font-medium text-xs text-blue-950">Unlocked</option>
             </select>
           </div>
+
+          {/* Date Range Picker */}
+          <div className="mb-4">
+            <label className="block text-sm font-semibold text-blue-950 mb-2">Filter by Date Range</label>
+            <div className="flex space-x-4">
+              <input
+                type="date"
+                className="p-2 border border-gray-300 rounded-lg text-xs font-light text-blue-950"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                className="p-2 border border-gray-300 rounded-lg text-xs font-light text-blue-950"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+              <button
+                onClick={handleDateRangeChange}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+              >
+                Apply Range
+              </button>
+            </div>
+          </div>
+
+          {/* PDF Download Button */}
+          <div className="mb-4">
+            <button
+              onClick={generatePDF}
+              className="bg-green-600 text-white px-6 py-2 rounded-lg"
+            >
+              Download PDF
+            </button>
+          </div>
+
           <div className="mt-2 p-4 bg-white rounded-lg shadow-md h-80 overflow-y-auto">
             <table className="min-w-full bg-white border-collapse">
               <thead className="text-gray-500 text-xs">
@@ -120,14 +186,13 @@ const SafeLockSummary = ({ balance, addBalance }) => {
                   <th className="border-b py-4 px-1 text-left">Amount</th>
                   <th className="border-b py-4 px-1 text-left">Status</th>
                   <th className="border-b py-4 px-1 text-left">Release Date</th>
-                  {/* <th className="border-b py-4 px-1 text-left">Actions</th> */}
                 </tr>
               </thead>
               <tbody className="text-sm">
                 {filteredSafelocks.map((safelock) => (
                   <tr key={safelock.id}>
                     <td className="border-b py-4 px-1 text-blue-950">{`QUANTRA0${safelock.id}`}</td>
-                    <td className="border-b py-4 px-1 text-blue-950">{new Date(safelock.createdAt).toLocaleDateString()}</td>
+                    <td className="border-b py-4 px-1 text-blue-950">{new Date(safelock.date).toLocaleDateString()}</td>
                     <td className="border-b py-4 px-1 text-blue-950">₦{safelock.amount}</td>
                     <td
                       className={`border-b py-4 px-1 text-blue-950 ${
@@ -139,14 +204,6 @@ const SafeLockSummary = ({ balance, addBalance }) => {
                     <td className="border-b py-4 px-1 text-blue-950">
                       {new Date(safelock.releaseDate).toLocaleDateString()}
                     </td>
-                    {/* <td className="border-b py-4 px-1 text-blue-950">
-                      <button
-                        onClick={() => handleShowReceipt(safelock)}
-                        className="text-xs font-bold text-white py-2 px-2 rounded-lg bg-orange-500 hover:bg-orange-900"
-                      >
-                        View Receipt
-                      </button>
-                    </td> */}
                   </tr>
                 ))}
               </tbody>

@@ -7,8 +7,8 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale,
 
 const CategoryBarChart2 = () => {
   const [categorySums, setCategorySums] = useState([]);  // State to hold the fetched data
-  const [loading, setLoading] = useState(true);  // Loading state
-  const [chartType, setChartType] = useState('bar'); // State to toggle between bar and pie chart
+  const [loading2, setLoading2] = useState(true);  // Loading state
+  const [chartType1, setChartType1] = useState('bar'); // State to toggle between bar and pie chart
 
   // Custom color mapping for each category
   const categoryColors = {
@@ -26,10 +26,10 @@ const CategoryBarChart2 = () => {
       try {
         const response = await axios.get('http://localhost:5000/api/transactions/category-sums');
         setCategorySums(response.data);  // Set data from backend
-        setLoading(false);  // Set loading to false once data is fetched
+        setLoading2(false);  // Set loading to false once data is fetched
       } catch (error) {
         console.error('Error fetching category sums:', error);
-        setLoading(false);  // Stop loading in case of error
+        setLoading2(false);  // Stop loading in case of error
       }
     };
 
@@ -70,8 +70,8 @@ const CategoryBarChart2 = () => {
   };
 
   // Handle chart type change
-  const handleChartTypeChange = (event) => {
-    setChartType(event.target.value);  // Set the selected chart type
+  const handleChartTypeChange1 = (event) => {
+    setChartType1(event.target.value);  // Set the selected chart type
   };
 
   return (
@@ -83,8 +83,8 @@ const CategoryBarChart2 = () => {
         {/* Select input to choose chart type */}
         <div className="mb-1 text-center">
           <select 
-            value={chartType} 
-            onChange={handleChartTypeChange} 
+            value={chartType1} 
+            onChange={handleChartTypeChange1} 
             className="bg-blue-500 font-light text-sm text-white px-2 py-1 rounded"
           >
             <option value="pie">Pie Chart</option>
@@ -93,11 +93,11 @@ const CategoryBarChart2 = () => {
           </select>
         </div>
 
-        {loading ? (
+        {loading2 ? (
           <p className="text-center">Loading...</p>  // Show loading message while fetching
         ) : (
           // Conditionally render Bar or Pie chart based on the selected chart type
-          chartType === 'pie' ? (
+          chartType1 === 'pie' ? (
             <div > {/* Set a max height */}
               <Bar data={chartData} />
             </div>

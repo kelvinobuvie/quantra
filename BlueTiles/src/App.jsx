@@ -12,6 +12,7 @@ import TransactionHistory from './Pages/TransactionHistory';
 
 import SafeLockForm from './Pages/Wallet/SafeLockForm';
 import SafeLockList from './Pages/Wallet/SafeLockList';
+import StatementPage from './Pages/Wallet/StatementPage';
 
 const App = () => {
   // Centralized Balance State
@@ -42,6 +43,9 @@ const App = () => {
           <Route path='targets' element={<Targets balance={balance} />} />
           <Route path='new-transaction' element={<TransactionForm balance={balance} deductBalance={deductBalance} />} />
           <Route path='transaction-history' element={<TransactionHistory />} />
+          <Route path='statement' element={<StatementPage />} />
+
+          
         
           <Route path='safe-lock-list' element={<SafeLockList addBalance={addBalance} balance={balance} />} />
         </Route>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
 import { useNavigate } from 'react-router-dom';
 
 const TransactionList = () => {
@@ -15,6 +16,10 @@ const TransactionList = () => {
   });
   const [receipt, setReceipt] = useState(null);  // To store the selected receipt details
   const [showReceiptModal, setShowReceiptModal] = useState(false);  // To control visibility of the modal
+  
+  // Date range filter states
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     axios
@@ -31,17 +36,36 @@ const TransactionList = () => {
       });
   }, []);
 
+  // Handle category change
   const handleCategoryChange = (event) => {
     const category = event.target.value;
     setSelectedCategory(category);
-    if (category === 'All') {
-      setFilteredTransactions(transactions);
-    } else {
-      const filtered = transactions.filter((tx) => tx.category === category);
-      setFilteredTransactions(filtered);
-    }
+    applyFilters(category, startDate, endDate);
   };
 
+  // Apply filters based on selected category, startDate, and endDate
+  const applyFilters = (category, start, end) => {
+    let filtered = [...transactions];
+
+    // Filter by category
+    if (category && category !== 'All') {
+      filtered = filtered.filter((tx) => tx.category === category);
+    }
+
+    // Filter by date range
+    if (start && end) {
+      filtered = filtered.filter((tx) => {
+        const txDate = new Date(tx.date);
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        return txDate >= startDate && txDate <= endDate;
+      });
+    }
+
+    setFilteredTransactions(filtered);
+  };
+
+  // Handle date sorting
   const handleDateSort = () => {
     const sorted = [...filteredTransactions];
     sorted.sort((a, b) => {
@@ -56,6 +80,7 @@ const TransactionList = () => {
     }));
   };
 
+  // Handle amount sorting
   const handleAmountSort = () => {
     const sorted = [...filteredTransactions];
     sorted.sort((a, b) => {
@@ -70,6 +95,7 @@ const TransactionList = () => {
     }));
   };
 
+  // Handle viewing the receipt
   const handleViewReceipt = (transactionId) => {
     axios
       .get(`http://localhost:5000/api/transactions/${transactionId}`)
@@ -82,9 +108,50 @@ const TransactionList = () => {
       });
   };
 
+  // Close the receipt modal
   const closeReceiptModal = () => {
     setShowReceiptModal(false); // Close the receipt modal
     setReceipt(null); // Clear the receipt details
+  };
+
+  // Handle date range change
+  const handleDateRangeChange = () => {
+    applyFilters(selectedCategory, startDate, endDate);
+  };
+
+  // Function to generate PDF for the filtered transactions
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    // Title for the PDF
+    doc.setFontSize(18);
+    doc.text('Transaction History', 20, 20);
+
+    // Column headers
+    doc.setFontSize(8);
+    doc.text('Transaction ID', 20, 40);
+    doc.text('Date', 60, 40);
+    doc.text('Category', 100, 40);
+    doc.text('Description', 140, 40);
+    doc.text('Amount', 180, 40);
+    doc.text('Status', 220, 40);
+
+    // Set line height
+    let lineHeight = 50;
+
+    // Add transaction rows to the PDF
+    filteredTransactions.forEach((tx, index) => {
+      doc.text(`QUANTRA0${tx.id}`, 20, lineHeight);
+      doc.text(new Date(tx.date).toLocaleDateString(), 60, lineHeight);
+      doc.text(tx.category, 100, lineHeight);
+      doc.text(tx.description, 140, lineHeight);
+      doc.text(`₦${tx.amount.toLocaleString()}`, 180, lineHeight);
+      doc.text(tx.status, 220, lineHeight);
+      lineHeight += 10;
+    });
+
+    // Save the PDF
+    doc.save('transaction-history.pdf');
   };
 
   if (loading) {
@@ -131,6 +198,43 @@ const TransactionList = () => {
         </select>
       </div>
 
+      {/* Date range filter */}
+      <div className="mb-4">
+        <label className="block text-sm font-semibold text-blue-950 mb-2">
+          Filter by Date Range
+        </label>
+        <div className="flex space-x-4">
+          <input
+            type="date"
+            className="p-2 border border-gray-300 rounded-lg text-xs font-light text-blue-950"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <input
+            type="date"
+            className="p-2 border border-gray-300 rounded-lg text-xs font-light text-blue-950"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <button
+            onClick={handleDateRangeChange}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          >
+            Apply Range
+          </button>
+        </div>
+      </div>
+
+      {/* PDF Download Button */}
+      <div className="mb-4">
+        <button
+          onClick={generatePDF}
+          className="bg-green-600 text-white px-6 py-2 rounded-lg"
+        >
+          Download PDF
+        </button>
+      </div>
+
       <table className="min-w-full bg-white border-collapse">
         <thead className="text-gray-500 text-xs">
           <tr>
@@ -157,7 +261,7 @@ const TransactionList = () => {
           {filteredTransactions.map((tx, index) => (
             <tr key={index} className="text-left bg-blue-100">
               <td className="border-b py-4 px-1 text-blue-950">QUANTRA0{tx.id}</td>
-              <td className="border-b py-4 px-1 text-blue-950">{tx.date}</td>
+              <td className="border-b py-4 px-1 text-blue-950">{new Date(tx.date).toLocaleDateString()}</td>
               <td className="border-b py-4 px-1 text-blue-950">{tx.category}</td>
               <td className="border-b py-4 px-1 text-blue-950">{tx.description}</td>
               <td className="border-b py-4 px-1 text-blue-950">

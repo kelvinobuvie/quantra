@@ -7,32 +7,32 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, Categ
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale);
 
 const CategoryCountChart = () => {
-  const [categoryCounts, setCategoryCounts] = useState([]);  // State to hold the fetched category counts
-  const [loading, setLoading] = useState(true);  // Loading state
-  const [chartType, setChartType] = useState('pie');  // State to toggle between bar and pie chart
-  const [error, setError] = useState(null);  // Error handling state
+  const [categoryCounts2, setCategoryCounts2] = useState([]);  // State to hold the fetched category counts
+  const [loading3, setLoading3] = useState(true);  // Loading state
+  const [chartType3, setChartType3] = useState('pie');  // State to toggle between bar and pie chart
+  const [error3, setError3] = useState(null);  // Error handling state
 
   // Fetch category counts data from the API
   useEffect(() => {
     axios
       .get('http://localhost:5000/api/transactions/category-counts')  // Replace with your actual API URL
       .then((response) => {
-        setCategoryCounts(response.data);  // Store the data in state
-        setLoading(false);  // Stop loading when data is fetched
+        setCategoryCounts2(response.data);  // Store the data in state
+        setLoading3(false);  // Stop loading when data is fetched
       })
       .catch((error) => {
-        setError('Failed to load category counts');  // Set error message if API call fails
-        setLoading(false);  // Stop loading even if there’s an error
+        setError3('Failed to load category counts');  // Set error message if API call fails
+        setLoading3(false);  // Stop loading even if there’s an error
       });
   }, []);
 
   // Prepare chart data based on fetched category counts
-  const chartData = {
-    labels: categoryCounts.map(item => item.category),  // Categories as chart labels
+  const chartData3 = {
+    labels: categoryCounts2.map(item => item.category),  // Categories as chart labels
     datasets: [
       {
         label: 'Transaction Count by Category',
-        data: categoryCounts.map(item => item.total_count),  // Transaction counts
+        data: categoryCounts2.map(item => item.total_count),  // Transaction counts
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#F7464A'],  // Colors for the Pie chart segments
         borderColor: '#fff',  // Border color for each segment
         borderWidth: 1,  // Border width
@@ -41,7 +41,7 @@ const CategoryCountChart = () => {
   };
 
   // Chart options for the Bar chart
-  const barChartOptions = {
+  const barChartOptions3 = {
     responsive: true,
     indexAxis: 'y',  // Set the index axis to 'y' for horizontal bars
     scales: {
@@ -60,7 +60,7 @@ const CategoryCountChart = () => {
   };
 
   // Chart options for the Pie chart
-  const pieChartOptions = {
+  const pieChartOptions3 = {
     responsive: true,
     plugins: {
       legend: {
@@ -77,8 +77,8 @@ const CategoryCountChart = () => {
   };
 
   // Handle chart type change
-  const handleChartTypeChange = (event) => {
-    setChartType(event.target.value);  // Set the selected chart type
+  const handleChartTypeChange3 = (event) => {
+    setChartType3(event.target.value);  // Set the selected chart type
   };
 
   // Render loading message, error message, or chart based on the state
@@ -89,8 +89,8 @@ const CategoryCountChart = () => {
       {/* Select input to choose chart type */}
       <div className="mb-1 text-center">
         <select
-          value={chartType}
-          onChange={handleChartTypeChange}
+          value={chartType3}
+          onChange={handleChartTypeChange3}
           className="bg-blue-500 text-sm font-light text-white px-2 py-1 rounded"
         >
           <option value="pie">Pie Chart</option>
@@ -98,19 +98,19 @@ const CategoryCountChart = () => {
         </select>
       </div>
 
-      {loading ? (
+      {loading3 ? (
         <p>Loading...</p>  // Show loading message while fetching data
-      ) : error ? (
-        <p>{error}</p>  // Show error message if the API call fails
+      ) : error3 ? (
+        <p>{error3}</p>  // Show error message if the API call fails
       ) : (
         // Conditionally render Bar or Pie chart based on the selected chart type
-        chartType === 'bar' ? (
+        chartType3 === 'bar' ? (
           <div style={{ maxWidth: '100%', maxHeight: '400px' }}>
-            <Bar data={chartData} options={barChartOptions} />
+            <Bar data={chartData3} options={barChartOptions3} />
           </div>
         ) : (
           <div style={{ maxWidth: '100%', maxHeight: '400px' }}>
-            <Pie data={chartData} options={pieChartOptions} />
+            <Pie data={chartData3} options={pieChartOptions3} />
           </div>
         )
       )}

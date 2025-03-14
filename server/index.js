@@ -353,6 +353,57 @@ app.get('/api/safelocks/locked-count', (req, res) => {
   });
 });
 
+// Middleware to parse JSON requests
+app.use(express.json());
+
+
+// Get transactions by date range and category summaries (count and total amount)
+app.get('/api/transactions/date-range', (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  // Validate input dates
+  if (!startDate || !endDate) {
+    return res.status(400).json({ message: 'Both startDate and endDate are required' });
+  }
+
+  // Query to get transactions within the selected date range
+  const transactionsQuery = `
+    SELECT * 
+    FROM transactions
+    WHERE date BETWEEN ? AND ?
+  `;
+
+  // Query to get the count and total amount for each category in the date range
+  const categorySumsQuery = `
+    SELECT category, COUNT(*) AS total_count, SUM(amount) AS total_amount
+    FROM transactions
+    WHERE date BETWEEN ? AND ?
+    GROUP BY category
+  `;
+
+  // Execute both queries in parallel
+  pool.query(transactionsQuery, [startDate, endDate], (err, transactions) => {
+    if (err) {
+      console.error('Error fetching transactions:', err);
+      return res.status(500).json({ message: 'Error fetching transactions', error: err });
+    }
+
+    pool.query(categorySumsQuery, [startDate, endDate], (err, categorySums) => {
+      if (err) {
+        console.error('Error fetching category sums:', err);
+        return res.status(500).json({ message: 'Error fetching category sums', error: err });
+      }
+
+      // Return both the transaction list and the category sums
+      res.status(200).json({
+        status: 'Successful',
+        transactions,
+        categorySums
+      });
+    });
+  });
+});
+
 
 
 const PORT = 5000;
