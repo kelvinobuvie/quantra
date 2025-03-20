@@ -14,25 +14,25 @@ Insert image of problem scenario (e.g., a student overwhelmed with bills or comp
 To address these challenges, we built a Financial Management App aimed at helping students better track, manage, and plan their finances. The app provides tools for budgeting, monitoring spending, saving for goals, and improving financial literacy. It also includes key security features like safelocking funds for future use.
 
 ## Key Features:
-**Dashboard Overview:** A simple, user-friendly interface that provides a snapshot of the user's financial health, including balances, expenses, and savings goals.
-**Transaction History & Reports:** A page that records transaction history, allowing users to categorize spending and analyze their financial behavior over time.
-**Visual Financial Charts:** Interactive visual representations (graphs/charts) showing how the user's finances are managed and where they are spending.
-**Safelock Feature:** A secure lock for funds that prevents users from accessing certain amounts of money until they need it, encouraging responsible savings and financial discipline.
+**Dashboard Overview:** A simple, user-friendly interface that provides a snapshot of the user's financial health, including balances, expenses, and savings goals. <Br/>
+**Transaction History & Reports:** A page that records transaction history, allowing users to categorize spending and analyze their financial behavior over time. <Br/>
+**Visual Financial Charts:** Interactive visual representations (graphs/charts) showing how the user's finances are managed and where they are spending.<Br/>
+**Safelock Feature:** A secure lock for funds that prevents users from accessing certain amounts of money until they need it, encouraging responsible savings and financial discipline.<Br/>
 **Expense Categorization:** Automated categorization of transactions, helping users identify spending habits and areas where they can cut back.
-<div style="dislplay:flex;">
-<img width="400" alt="Screenshot 2023-07-23 034832" src="https://github.com/kelvinobuvie/TRM-app/blob/main/src/assets/Images/Login%20page.png">
-<img width="400" alt="Screenshot 2023-07-23 034929" src="https://github.com/kelvinobuvie/TRM-app/blob/main/src/assets/Images/Dashboard%20overview.png">
-<img width="400" alt="Screenshot 2023-07-23 035003" src="https://github.com/kelvinobuvie/TRM-app/blob/main/src/assets/Images/Inspection%20page.png">
-<img width="400" alt="Screenshot 2023-07-23 035003" src="https://github.com/kelvinobuvie/TRM-app/blob/main/src/assets/Images/report%20page.png">
+<div style="dislplay:flex; flex-direction:column;">
+<img width="400" alt="Screenshot 2023-07-23 034929" src="https://github.com/kelvinobuvie/quantra/blob/main/Dashboard.png">
+<img width="400" alt="Screenshot 2023-07-23 034832" src="https://github.com/kelvinobuvie/quantra/blob/main/Charts.png?raw=true">
+<img width="400" alt="Screenshot 2023-07-23 035003" src="https://github.com/kelvinobuvie/quantra/blob/main/Transactionlist.png">
+<img width="400" alt="Screenshot 2023-07-23 035003" src="https://github.com/kelvinobuvie/quantra/blob/main/Transaction%20summary.png">
 </div>
 
 
 ## Technology Stack
 The app was developed using the following technologies:
 
-**React (Front-end):** For building a dynamic and responsive user interface.
-**Express (API):** To handle server-side logic and API routes.
-**SQL (Database):** For efficient storage and management of user data, transactions, and financial records.
+**React (Front-end):** For building a dynamic and responsive user interface.<br/>
+**Express (API):** To handle server-side logic and API routes.<br/>
+**SQL (Database):** For efficient storage and management of user data, transactions, and financial records.<br/>
 
 
 ## Design and Development Process
