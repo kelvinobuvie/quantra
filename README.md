@@ -75,6 +75,6 @@ This financial management app has provided a valuable solution for students who 
 
 
 ## Future Improvements
-**Debt Management:** Adding tools for managing student loans and credit card debt.
-**Investment Tracking:** Introducing features for tracking investments and retirement savings.
+**Debt Management:** Adding tools for managing student loans and credit card debt.<br/>
+**Investment Tracking:** Introducing features for tracking investments and retirement savings.<br/>
 **Personalized Financial Advice:** Providing tailored recommendations based on individual spending habits.
